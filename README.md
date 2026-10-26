@@ -2,7 +2,7 @@
 
 Com anticipar el resultat final d'unes eleccions generals a Espanya ponderant les meses ja escrutades amb el resultat de les eleccions anteriors.
 
-**Informe:** [informe_escrutini.html](informe_escrutini.html) (en català)
+**Informe:** <https://jordi-munoz.github.io/escrutini/> (en català)
 
 *English summary:* during election night, Spanish partial results are misleading because rural booths are counted first and big cities last. Reweighting the booths already counted so that their previous-election results match each province's previous result recovers the final vote shares (within 1 pp for every main party) with only 10–12% of booths counted, versus 52–80% for the raw partial count. Simulation with booth-level data for the 2016, April 2019, November 2019 and 2023 general elections.
 
