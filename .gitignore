@@ -1,0 +1,19 @@
+# Raw data (Ministerio del Interior booth-level files, ~180 MB)
+data/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Quarto / knitr temporary files
+.quarto/
+*_files/
+*_cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
