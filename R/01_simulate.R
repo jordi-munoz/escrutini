@@ -30,7 +30,9 @@ cfg <- list(
   #                               + b_booth * (ballots in booth / 500) + noise
   b_booth     = 0.5,
   noise_sd    = 0.30,
-  min_booths  = 30,        # min counted booths to calibrate within a province;
+  min_booths  = 30,        # min counted booths to calibrate within a province
+  min_frac    = 0.25,      # ... or this share of the province's booths, if smaller
+                           # (matters for small provinces such as Ceuta, Melilla);
                            # otherwise borrow booths from the region / Spain
   min_share   = 0.03,      # previous-election categories below 3% of census in
                            # a province are merged into "other"
@@ -126,9 +128,10 @@ estimate_snapshot <- function(P, counted) {
     big <- names(tg)[tg / sum(tg) >= cfg$min_share & names(tg) != "other"]
     small <- setdiff(names(tg), big)
     pools <- list(in_p, counted[cnt_ccaa == P$prov_ccaa[k]], counted)
+    min_own <- min(cfg$min_booths, ceiling(cfg$min_frac * length(P$prov_idx[[k]])))
     for (lev in 1:3) {
       ix <- pools[[lev]]
-      if (length(ix) < cfg$min_booths && lev < 3) next
+      if (length(ix) < (if (lev == 1) min_own else cfg$min_booths) && lev < 3) next
       Xk <- cbind(P$X[ix, big, drop = FALSE],
                   other = rowSums(P$X[ix, small, drop = FALSE]))
       Tk <- c(tg[big], other = sum(tg[small]))
