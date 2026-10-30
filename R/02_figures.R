@@ -1,9 +1,9 @@
 # =============================================================================
 # Figures (PNG) from output/sim_results.rds
 #
-# Language: English by default, Catalan with
-#   Rscript R/02_figures.R ca          (or options(escrutini.lang = "ca"))
-# English figures go to output/figures/, Catalan ones to output/figures_ca/.
+# Language: English by default, Catalan or Spanish with
+#   Rscript R/02_figures.R ca   (or es; or options(escrutini.lang = "ca"))
+# English figures go to output/figures/, the others to output/figures_<lang>/.
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -12,11 +12,11 @@ suppressPackageStartupMessages({
 
 args <- commandArgs(trailingOnly = TRUE)
 lang <- if (length(args)) args[1] else getOption("escrutini.lang", "en")
-stopifnot(lang %in% c("en", "ca"))
+stopifnot(lang %in% c("en", "ca", "es"))
 
 S <- readRDS("output/sim_results.rds")
 res <- copy(S$results); fin <- copy(S$finals); cfg <- S$cfg
-out_dir <- if (lang == "en") "output/figures" else "output/figures_ca"
+out_dir <- if (lang == "en") "output/figures" else paste0("output/figures_", lang)
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 # ---- Texts -------------------------------------------------------------------
@@ -101,11 +101,57 @@ TX <- list(
     f5_lab = "%s (%s dels vots)",
     metric = c(share = "Tots els partits principals a menys d'1 punt del seu resultat final",
                seats = "No més de 3 escons mal assignats"),
+    dec = ","),
+  es = list(
+    el = c("2016-06" = "jun. 2016", "2019-04" = "abr. 2019",
+           "2019-11" = "nov. 2019", "2023-07" = "jul. 2023"),
+    el_long = c("2016-06" = "junio de 2016", "2019-04" = "abril de 2019",
+                "2019-11" = "noviembre de 2019", "2023-07" = "julio de 2023"),
+    method = c("Raw count" = "Escrutinio parcial (sin ponderar)",
+               "Weighted" = "Ponderado con las elecciones anteriores"),
+    x = "Mesas escrutadas (% del total)",
+    caption = paste0(
+      "Simulación con resultados por mesa (Ministerio del Interior). Las mesas llegan en este orden: primero los pueblos pequeños, ",
+      "después las ciudades medianas y al final las grandes ciudades.
+",
+      "Ponderado: las mesas escrutadas se reponderan para que sus resultados en las elecciones anteriores reproduzcan ",
+      "el resultado anterior de la provincia.
+Líneas: mediana de %d órdenes de escrutinio simulados; bandas: 10-90%%."),
+    caption5 = paste0(
+      "Simulación con resultados por mesa (Ministerio del Interior). Orden de llegada: ",
+      "primero pueblos pequeños, después ciudades medianas y al final grandes ciudades.
+",
+      "Ponderado: las mesas escrutadas se reponderan para que sus resultados en las elecciones anteriores ",
+      "reproduzcan el resultado anterior de la provincia.
+Mediana de %d órdenes de escrutinio simulados."),
+    tiers = c("Pueblos (< 5.000 electores)", "Ciudades pequeñas y medianas (5.000-100.000)",
+              "Grandes ciudades (> 100.000)", "Total de votos emitidos"),
+    f1_title = "El escrutinio no es una muestra aleatoria",
+    f1_sub = "Porcentaje de mesas de cada tipo ya escrutadas a medida que avanza el recuento (orden simulado, julio de 2023)",
+    f1_y = "Ya escrutado (%)",
+    f1_cap = paste0("Orden de llegada: log10(electores del municipio) + papeletas de la mesa / 1.000 + ruido aleatorio.
+",
+                    "Con la mitad de las mesas escrutadas, se ha contado bastante menos de la mitad de los votos."),
+    f2_title = "Elecciones generales de %s: porcentaje de voto durante el escrutinio",
+    f2_sub = "Línea discontinua = resultado final. La estimación ponderada se acerca a él mucho antes que el escrutinio sin ponderar.",
+    f2_y = "Voto (% sobre votos válidos)",
+    f2_panel = "%s  (final: %s)",
+    f3_title = "¿Cuánto se aleja el resultado parcial del final?",
+    f3_sub = "Mayor error entre los partidos principales (>= 5% del voto), en puntos porcentuales. Línea discontinua = 1 punto.",
+    f3_y = "Mayor error (puntos)", pp = " p.",
+    f4_title = "Escaños en manos equivocadas",
+    f4_sub = "Escaños asignados a un partido distinto del resultado final (D'Hondt por provincia sobre el voto parcial o ponderado)",
+    f4_y = "Escaños mal asignados (de 350)",
+    f5_title = "¿Cuándo se podría anticipar el resultado final?",
+    f5_sub = "Porcentaje de mesas escrutadas a partir del cual la estimación ya no se aleja del resultado final (mediana de las simulaciones)",
+    f5_lab = "%s (%s de los votos)",
+    metric = c(share = "Todos los partidos principales a menos de 1 punto de su resultado final",
+               seats = "No más de 3 escaños mal asignados"),
     dec = ",")
 )
 T <- TX[[lang]]
 pct_lab <- function(x, acc = 1) label_percent(scale = 1, accuracy = acc, decimal.mark = T$dec,
-                                              big.mark = if (lang == "ca") "." else ",")(x)
+                                              big.mark = if (lang == "en") "," else ".")(x)
 
 # ---- Style -------------------------------------------------------------------
 col_method <- c("Raw count" = "#eb6834", "Weighted" = "#2a78d6")
@@ -253,8 +299,19 @@ t_share <- time_to(err_sum, "max_err", 1)[, metric := "share"]
 t_seats <- time_to(seat_err, "seats_off", 3)[, metric := "seats"]
 tt <- rbind(t_share, t_seats)[, .(pct_booths = median(pct_booths), pct_votes = median(pct_votes)),
                               by = .(election, el, method, metric)]
-fwrite(tt[, .(election, method, metric, pct_booths, pct_votes)][order(metric, election, method)],
-       "output/time_to_reliable.csv")
+tt <- tt[order(metric, election, method)]
+if (lang == "en") {
+  fwrite(tt[, .(election, method, metric, pct_booths, pct_votes)], "output/time_to_reliable.csv")
+} else {
+  # Translated version: ";" separator and decimal comma (opens directly in
+  # Excel with Catalan/Spanish regional settings)
+  cn <- if (lang == "ca") c("eleccions", "metode", "criteri", "pct_meses_escrutades", "pct_vots_comptats")
+        else c("elecciones", "metodo", "criterio", "pct_mesas_escrutadas", "pct_votos_contados")
+  out <- tt[, .(T$el_long[election], T$method[method], T$metric[metric],
+                round(pct_booths, 1), round(pct_votes, 1))]
+  setnames(out, cn)
+  fwrite(out, sprintf("output/time_to_reliable_%s.csv", lang), sep = ";", dec = ",", bom = TRUE)
+}
 tt[, el := factor(el, levels = rev(T$el))]
 tt[, metric_lab := factor(T$metric[metric], levels = T$metric)]
 seg <- dcast(tt, el + metric_lab ~ method, value.var = "pct_booths")

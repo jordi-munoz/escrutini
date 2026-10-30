@@ -64,6 +64,8 @@ rng <- function(m, k) range(tt[method == m & metric == k, pct_booths])
 fig <- function(f) file.path("output/figures_ca", f)
 ```
 
+*[Versión en castellano](informe_escrutini_es.html)*
+
 ## Resum {.unnumbered}
 
 La nit electoral, el Ministeri de l'Interior publica els resultats a mesura que s'escruten les meses. Aquest escrutini parcial **no és una mostra representativa**: primer arriben les meses dels pobles petits, on es vota molt diferent que a les grans ciutats, i les meses urbanes arriben al final. Per això, el resultat provisional pot ser enganyós durant bona part de la nit. De fet, és habitual que alguns partits comencin l'escrutini i estiguin bona part de la nit per davant i després es capgirin els resultats.
@@ -231,5 +233,5 @@ Tot el codi és en R i es troba a la carpeta `R/`:
 
 - `R/00_functions.R`: lectura dels fitxers del Ministeri, calibratge (*raking*) i D'Hondt.
 - `R/01_simulate.R`: simulació de l'escrutini (genera `output/sim_results.rds`; uns 5 minuts).
-- `R/02_figures.R`: figures en anglès (`Rscript R/02_figures.R`) o en català (`Rscript R/02_figures.R ca`).
+- `R/02_figures.R`: figures en anglès (`Rscript R/02_figures.R`), en català (`Rscript R/02_figures.R ca`) o en castellà (`Rscript R/02_figures.R es`).
 - `informe_escrutini.qmd`: aquest informe (`quarto render informe_escrutini.qmd`).
