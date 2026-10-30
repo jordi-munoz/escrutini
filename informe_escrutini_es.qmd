@@ -72,7 +72,7 @@ Por este motivo, a menudo se recurre a las encuestas a pie de urna (caras y a me
 
 Este informe muestra que una corrección muy sencilla lo resuelve en gran parte. Basta con **ponderar las mesas ya escrutadas para que, en conjunto, reproduzcan el resultado de las elecciones anteriores en cada provincia**. Con los datos reales mesa a mesa de cuatro elecciones generales (2016, abril de 2019, noviembre de 2019 y 2023) y un orden de escrutinio simulado, la estimación ponderada sitúa a todos los partidos principales a menos de un punto de su resultado final con solo un `r p0(rng("Weighted", "share")[1])`-`r p0(rng("Weighted", "share")[2])` de las mesas escrutadas. El escrutinio sin ponderar necesita entre el `r p0(rng("Raw count", "share")[1])` y el `r p0(rng("Raw count", "share")[2])`.
 
-Es un método parecido al que utilizó la web https://apuracaoaberta.com.br/, que en las elecciones brasileñas predijo el resultado final con menos del 20% de las secciones escrutadas.
+Es un método parecido al que utilizó la web [apuracaoaberta.com.br](https://apuracaoaberta.com.br/), que en las elecciones brasileñas predijo el resultado final con menos del 20% de las secciones escrutadas.
 
 ## El problema: el escrutinio no es aleatorio
 

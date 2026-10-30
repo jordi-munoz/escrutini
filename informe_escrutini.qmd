@@ -74,7 +74,7 @@ Per aquest motiu, sovint es recorre a les enquestes a peu d'urna (cares i sovint
 
 Aquest informe mostra que una correcció molt senzilla ho resol en gran part. N'hi ha prou de **ponderar les meses ja escrutades perquè, en conjunt, reprodueixin el resultat de les eleccions anteriors a cada província**. Amb les dades reals mesa per mesa de quatre eleccions generals (2016, abril de 2019, novembre de 2019 i 2023) i un ordre d'escrutini simulat, l'estimació ponderada situa tots els partits principals a menys d'un punt del seu resultat final amb només un `r p0(rng("Weighted", "share")[1])`-`r p0(rng("Weighted", "share")[2])` de les meses escrutades. L'escrutini sense ponderar necessita entre el `r p0(rng("Raw count", "share")[1])` i el `r p0(rng("Raw count", "share")[2])`. 
 
-És un mètode semblant al que va fer servir la web https://apuracaoaberta.com.br/ que en les eleccions brasilenyes va predir el resultat final amb menys del 20% de les seccions escrutades.
+És un mètode semblant al que va fer servir la web [apuracaoaberta.com.br](https://apuracaoaberta.com.br/) que en les eleccions brasilenyes va predir el resultat final amb menys del 20% de les seccions escrutades.
 
 ## El problema: l'escrutini no és aleatori
 
